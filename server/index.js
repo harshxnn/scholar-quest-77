@@ -16,8 +16,12 @@ function runChatOrchestrator(query, activeSources, activeAddons, advancedOptions
             files
         });
 
-        // Execute the Python script using uv run
-        const pythonProcess = spawn('uv', ['run', 'agent.py'], {
+        // Execute the Python script using python3 in Vercel or locally
+        // On Vercel, Python 3 is available in the Node runtime env
+        const pythonCommand = process.env.VERCEL ? 'python3' : 'uv';
+        const pythonArgs = process.env.VERCEL ? ['agent.py'] : ['run', 'agent.py'];
+
+        const pythonProcess = spawn(pythonCommand, pythonArgs, {
             cwd: __dirname,
             env: process.env // Pass environment variables
         });
