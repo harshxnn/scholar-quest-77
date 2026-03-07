@@ -1,24 +1,20 @@
 {
     "version": 2,
     "buildCommand": "npm run build:vercel",
-    "installCommand": "npm install && ./install_uv.sh",
     "builds": [
         {
             "src": "package.json",
             "use": "@vercel/static-build"
         },
         {
-            "src": "server/index.js",
-            "use": "@vercel/node",
-            "config": {
-                "includeFiles": "server/python_modules/**"
-            }
+            "src": "server/api/chat.py",
+            "use": "@vercel/python"
         }
     ],
     "rewrites": [
         {
             "source": "/api/(.*)",
-            "destination": "/server/index.js"
+            "destination": "/server/api/chat.py"
         },
         {
             "source": "/(.*)",
