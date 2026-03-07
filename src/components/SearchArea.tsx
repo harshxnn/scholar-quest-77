@@ -122,7 +122,7 @@ export function SearchArea() {
         formData.append('files', file);
       });
 
-      const response = await fetch('http://localhost:3001/api/chat', {
+      const response = await fetch('http://127.0.0.1:3001/api/chat', {
         method: 'POST',
         body: formData,
       });
