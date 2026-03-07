@@ -4,8 +4,6 @@ from typing import List, Optional
 import json
 import os
 
-from .agent import run_chat_orchestrator
-
 app = FastAPI()
 
 app.add_middleware(
@@ -20,12 +18,21 @@ app.add_middleware(
 async def ping():
     return {"status": "ok", "message": "FastAPI is running natively on Vercel Python"}
 
+@app.get("/")
+async def ping_root():
+    return {"status": "ok", "message": "FastAPI root endpoint"}
+
 @app.post("/api/chat")
 async def chat_endpoint(
     request: Request,
     files: List[UploadFile] = File(None)
 ):
+    processed_files = []
     try:
+        try:
+            from .agent import run_chat_orchestrator
+        except Exception as ie:
+            return {"error": f"Backend initialization failed: {ie}. Ensure Python dependencies are installed on the server (requirements.txt) and environment variables are set."}
         # In Vercel, multipart/form-data might need to be parsed from form
         form = await request.form()
         query = form.get("query", "")
@@ -39,7 +46,6 @@ async def chat_endpoint(
         parsed_advanced = json.loads(advanced_options) if advanced_options else {}
 
         # Save files temporarily for PyPDFLoader
-        processed_files = []
         if files:
             for file in files:
                 if file.filename:
@@ -58,15 +64,21 @@ async def chat_endpoint(
             files=processed_files
         )
 
-        # Cleanup temp files
-        for pf in processed_files:
-             try:
-                 os.remove(pf["path"])
-             except:
-                 pass
-
         return {"response": response}
     except Exception as e:
         print(f"Error in chat endpoint: {e}")
         return {"error": str(e)}
+    finally:
+        for pf in processed_files:
+            try:
+                os.remove(pf["path"])
+            except:
+                pass
+
+@app.post("/")
+async def chat_endpoint_root(
+    request: Request,
+    files: List[UploadFile] = File(None)
+):
+    return await chat_endpoint(request, files)
 
