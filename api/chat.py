@@ -16,6 +16,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/api/chat")
+async def ping():
+    return {"status": "ok", "message": "FastAPI is running natively on Vercel Python"}
+
 @app.post("/api/chat")
 async def chat_endpoint(
     request: Request,
