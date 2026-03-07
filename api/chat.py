@@ -4,7 +4,7 @@ from typing import List, Optional
 import json
 import os
 
-from ..agent import run_chat_orchestrator
+from .agent import run_chat_orchestrator
 
 app = FastAPI()
 
