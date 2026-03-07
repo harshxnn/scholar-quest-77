@@ -29,7 +29,7 @@ from langchain.agents import create_tool_calling_agent, AgentExecutor
 
 
 def get_llm():
-    gemini_api_key = os.environ.get("G_API_KEY")
+    gemini_api_key = os.environ.get("GOOGLE_API_KEY")
     if not gemini_api_key:
         return None
 
@@ -114,8 +114,8 @@ def generate_system_prompt(active_addons: List[str], advanced_options: Dict[str,
 
 
 def run_chat_orchestrator(query: str, active_sources: List[str], active_addons: List[str], advanced_options: Dict[str, Any], files: List[Any]):
-    if not os.environ.get("GOOGLE_GEMINI_API_KEY"):
-        return "Error: GOOGLE_GEMINI_API_KEY is not set on the backend. Please configure your .env file to enable the ScholarAI AI Brain."
+    if not os.environ.get("GOOGLE_API_KEY"):
+        return "Error: GOOGLE_API_KEY is not set on the backend. Please configure your environment to enable the ScholarAI AI Brain."
 
     llm = get_llm()
     if not llm:
