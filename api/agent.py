@@ -22,17 +22,14 @@ from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmb
 from langchain_groq import ChatGroq
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_community.vectorstores import FAISS
 from langchain_core.tools import create_retriever_tool
 from langchain_community.tools.tavily_search import TavilySearchResults
-from langchain_community.utilities.arxiv import ArxivAPIWrapper
-from langchain_community.tools.arxiv.tool import ArxivQueryRun
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain.agents import create_tool_calling_agent, AgentExecutor
 
 
 def get_llm():
-    gemini_api_key = os.environ.get("GOOGLE_GEMINI_API_KEY")
+    gemini_api_key = os.environ.get("G_API_KEY")
     if not gemini_api_key:
         return None
 
@@ -60,6 +57,12 @@ def process_pdfs_to_tool(files: List[Any]):
         return None
 
     try:
+        try:
+            from langchain_community.vectorstores import FAISS
+        except Exception as e:
+            sys.stderr.write(f"FAISS import failed; PDF tool disabled: {e}\n")
+            return None
+
         all_docs = []
         for file in files:
             loader = PyPDFLoader(file['path'])
@@ -127,9 +130,14 @@ def run_chat_orchestrator(query: str, active_sources: List[str], active_addons: 
         sys.stderr.write("- Added Tavily Internet Search Tool\n")
 
     if 'Papers' in active_sources:
-        arxiv_tool = ArxivQueryRun(api_wrapper=ArxivAPIWrapper(top_k_results=3, doc_content_chars_max=1500))
-        tools.append(arxiv_tool)
-        sys.stderr.write("- Added Arxiv Academic Search Tool\n")
+        try:
+            from langchain_community.utilities.arxiv import ArxivAPIWrapper
+            from langchain_community.tools.arxiv.tool import ArxivQueryRun
+            arxiv_tool = ArxivQueryRun(api_wrapper=ArxivAPIWrapper(top_k_results=3, doc_content_chars_max=1500))
+            tools.append(arxiv_tool)
+            sys.stderr.write("- Added Arxiv Academic Search Tool\n")
+        except Exception as e:
+            sys.stderr.write(f"Arxiv tool unavailable: {e}\n")
 
     if files:
         sys.stderr.write("Processing PDFs inside tool...\n")

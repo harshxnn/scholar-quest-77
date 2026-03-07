@@ -6,6 +6,5 @@ langchain-text-splitters>=0.2.0,<0.3.0
 faiss-cpu>=1.8.0
 pypdf>=4.2.0
 tavily-python>=0.3.3
-arxiv>=2.1.0
 fastapi
 python-multipart
