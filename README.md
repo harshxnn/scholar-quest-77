@@ -58,7 +58,3 @@ To run this project locally, you need the following installed:
 2.  Configure your Active Sources (e.g., Internet, Papers) and Add-ons (e.g., Methodology focus).
 3.  Optionally, upload PDF documents for context.
 4.  Enter your research query in the chat!
-
-## Deployment
-
-The frontend can be built using `npm run build` and deployed to any static host supporting Vite (Vercel, Netlify). The backend requires a Node.js environment capable of executing Python child processes (e.g., Render, Railway, or a traditional VPS).
