@@ -31,7 +31,7 @@ const bottomItems = [
 
 export function AppSidebar() {
   return (
-    <Sidebar className="border-r">
+    <Sidebar className="border-r border-border/40 bg-secondary">
       <SidebarHeader className="items-center py-4">
         <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary overflow-hidden">
           <img src="/bot.png" alt="ScholarAI Bot" className="h-full w-full object-cover" />

@@ -5,7 +5,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export function TopNav() {
   return (
-    <header className="flex h-14 items-center justify-between border-b px-4">
+    <header className="flex h-14 items-center justify-between border-b border-border/40 bg-secondary px-4">
       {/* Left */}
       <div className="flex items-center gap-3">
         <SidebarTrigger className="md:hidden" />
