@@ -1,6 +1,6 @@
 #!/bin/bash
-echo "Installing Python dependencies globally for Vercel serverless deployment..."
+echo "Installing Python dependencies locally for Vercel serverless deployment..."
 cd server
-pip3 install -r requirements.txt
+python3 -m pip install -r requirements.txt -t python_modules
 cd ..
 echo "Setup complete."

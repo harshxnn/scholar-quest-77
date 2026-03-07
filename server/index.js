@@ -21,9 +21,14 @@ function runChatOrchestrator(query, activeSources, activeAddons, advancedOptions
         const pythonCommand = process.env.VERCEL ? 'python3' : 'uv';
         const pythonArgs = process.env.VERCEL ? ['agent.py'] : ['run', 'agent.py'];
 
+        const env = Object.assign({}, process.env);
+        if (process.env.VERCEL) {
+            env.PYTHONPATH = path.join(__dirname, 'python_modules');
+        }
+
         const pythonProcess = spawn(pythonCommand, pythonArgs, {
             cwd: __dirname,
-            env: process.env // Pass environment variables
+            env: env // Pass environment variables
         });
 
         let stdoutData = '';
