@@ -127,17 +127,26 @@ export function SearchArea() {
         body: formData,
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP Error Status: ${response.status}`);
+      }
+
       const data = await response.json();
 
       setMessages(prev => [...prev, {
         role: 'bot',
-        content: data.response || "No response received."
+        content: data.error ? `Server Error: ${data.error}` : (data.response || "No response received.")
       }]);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Chat error:", error);
+      const isNetworkError = error instanceof TypeError && error.message === 'Failed to fetch';
+      const errorMessage = isNetworkError
+        ? "Network Error: Could not reach the ScholarAI backend. Please ensure the backend server is running on port 3001."
+        : `An error occurred: ${error.message}`;
+
       setMessages(prev => [...prev, {
         role: 'bot',
-        content: "An error occurred while connecting to the ScholarAI backend."
+        content: errorMessage
       }]);
     } finally {
       setIsLoading(false);

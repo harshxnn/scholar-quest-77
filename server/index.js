@@ -87,10 +87,15 @@ const upload = multer({ dest: 'uploads/' });
 
 app.post('/api/chat', upload.array('files'), async (req, res) => {
     try {
-        const { query, activeSources, activeAddons, advancedOptions } = req.body;
-        const files = req.files;
+        console.log('--- Incoming Request ---');
+        console.log('Content-Type:', req.headers['content-type']);
+        console.log('req.body:', req.body);
+        console.log('req.files:', req.files);
 
-        console.log('Received Chat Request:', query);
+        const { query, activeSources, activeAddons, advancedOptions } = req.body || {};
+        const files = req.files || [];
+
+        console.log('Received Chat Request Query:', query);
 
         const parsedSources = activeSources ? JSON.parse(activeSources) : [];
         const parsedAddons = activeAddons ? JSON.parse(activeAddons) : [];
@@ -109,6 +114,11 @@ app.post('/api/chat', upload.array('files'), async (req, res) => {
         console.error('Error in chat endpoint:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
+});
+
+app.use((err, req, res, next) => {
+    console.error('Express Error Handler:', err);
+    res.status(500).json({ error: err.message || 'Internal Server Error' });
 });
 
 app.listen(port, () => {
