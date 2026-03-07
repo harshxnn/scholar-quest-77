@@ -148,32 +148,41 @@ export function SearchArea() {
   return (
     <div className="mx-auto w-full max-w-3xl px-4 pb-12">
       {/* Hero */}
-      <div className="mb-10 flex flex-col items-center justify-center text-center">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl lg:text-[50px] lg:leading-[1.1]">
-          <span className="inline-grid w-full items-center justify-items-center">
-            {HERO_TEXTS.map((text, i) => (
-              <span
-                key={text}
-                className={`col-start-1 row-start-1 w-full bg-gradient-to-br from-foreground to-foreground/80 bg-clip-text text-transparent transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${heroIndex === i
-                  ? "opacity-100 translate-y-0 blur-none"
-                  : "opacity-0 translate-y-4 blur-[3px] pointer-events-none select-none"
-                  }`}
-              >
-                {text}
-              </span>
-            ))}
-          </span>
-        </h1>
-        <p className="mt-5 text-sm font-medium text-muted-foreground/80 md:text-base">
-          Powered by AI to accelerate your academic research
-        </p>
-      </div>
+      {messages.length === 0 && !isLoading && (
+        <div className="mb-10 flex flex-col items-center justify-center text-center">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl lg:text-[50px] lg:leading-[1.1]">
+            <span className="inline-grid w-full items-center justify-items-center">
+              {HERO_TEXTS.map((text, i) => (
+                <span
+                  key={text}
+                  className={`col-start-1 row-start-1 w-full bg-gradient-to-br from-foreground to-foreground/80 bg-clip-text text-transparent transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${heroIndex === i
+                    ? "opacity-100 translate-y-0 blur-none"
+                    : "opacity-0 translate-y-4 blur-[3px] pointer-events-none select-none"
+                    }`}
+                >
+                  {text}
+                </span>
+              ))}
+            </span>
+          </h1>
+          <p className="mt-5 text-sm font-medium text-muted-foreground/80 md:text-base">
+            Powered by AI to accelerate your academic research
+          </p>
+        </div>
+      )}
 
       {/* Search Container */}
-      <div className="group relative overflow-hidden rounded-3xl bg-card/80 backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04),0_24px_60px_rgba(179,75,96,0.15)] transition-all duration-500 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04),0_30px_80px_rgba(179,75,96,0.25)] border border-border/60 hover:border-[#B34B60]/30 focus-within:border-[#B34B60]/50 focus-within:ring-4 focus-within:ring-[#B34B60]/10 focus-within:shadow-[0_8px_30px_rgb(0,0,0,0.04),0_30px_80px_rgba(179,75,96,0.25)]">
+      <div className={`group relative overflow-hidden rounded-3xl bg-card/80 backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04),0_24px_60px_rgba(179,75,96,0.15)] transition-all duration-500 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04),0_30px_80px_rgba(179,75,96,0.25)] border border-border/60 hover:border-[#B34B60]/30 focus-within:border-[#B34B60]/50 focus-within:ring-4 focus-within:ring-[#B34B60]/10 focus-within:shadow-[0_8px_30px_rgb(0,0,0,0.04),0_30px_80px_rgba(179,75,96,0.25)] ${messages.length > 0 || isLoading ? 'flex flex-col h-[75vh]' : ''}`}>
+
+        {/* Chat History & LLM Responses inside the search container */}
+        {(messages.length > 0 || isLoading) && (
+          <div className="flex-1 overflow-y-auto w-full scroll-smooth scrollbar-thin scrollbar-thumb-border/50 scrollbar-track-transparent">
+            <ChatContainer messages={messages} isLoading={isLoading} />
+          </div>
+        )}
 
         {/* Textarea */}
-        <div className="relative p-6 pb-2">
+        <div className={`relative p-6 pb-2 shrink-0 ${messages.length > 0 || isLoading ? 'border-t border-border/30 bg-card/50' : ''}`}>
           {/* Attached Files Display */}
           {attachedFiles.length > 0 && (
             <div className="mb-4 flex flex-wrap gap-2 animate-in slide-in-from-top-2 fade-in duration-300">
@@ -201,10 +210,10 @@ export function SearchArea() {
               }
             }}
             placeholder="Enter your research topic or ask a question..."
-            className="min-h-[160px] resize-none border-0 bg-transparent p-0 text-[19px] shadow-none placeholder:text-muted-foreground/40 focus-visible:ring-0 leading-relaxed caret-[#B34B60] selection:bg-[#B34B60]/20"
+            className={`${messages.length > 0 || isLoading ? 'min-h-[80px]' : 'min-h-[160px]'} resize-none border-0 bg-transparent p-0 text-[19px] shadow-none placeholder:text-muted-foreground/40 focus-visible:ring-0 leading-relaxed caret-[#B34B60] selection:bg-[#B34B60]/20 transition-all duration-300`}
             maxLength={2000}
           />
-          <div className="absolute bottom-3 right-5 text-[11px] font-medium text-muted-foreground/30 select-none transition-colors group-focus-within:text-muted-foreground/60">
+          <div className={`absolute right-5 text-[11px] font-medium text-muted-foreground/30 select-none transition-colors group-focus-within:text-muted-foreground/60 ${messages.length > 0 || isLoading ? 'bottom-2' : 'bottom-3'}`}>
             {query.length} / 2000
           </div>
         </div>
@@ -345,9 +354,6 @@ export function SearchArea() {
           </div>
         </div>
       </div>
-
-      {/* Chat History & LLM Responses */}
-      <ChatContainer messages={messages} isLoading={isLoading} />
     </div>
   );
 }

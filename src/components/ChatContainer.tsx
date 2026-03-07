@@ -6,13 +6,13 @@ export function ChatContainer({ messages, isLoading }) {
     if (messages.length === 0 && !isLoading) return null;
 
     return (
-        <div className="w-full max-w-3xl mx-auto space-y-6 mt-8 pb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="w-full space-y-6 p-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {messages.map((msg, index) => (
                 <div
                     key={index}
                     className={`flex gap-4 p-5 rounded-2xl ${msg.role === 'user'
-                            ? 'bg-muted/50 border border-border/30 ml-8'
-                            : 'bg-card shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-border/60 mr-8'
+                        ? 'bg-muted/50 border border-border/30 ml-8'
+                        : 'bg-card shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-border/60 mr-8'
                         }`}
                 >
                     <div className={`flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full ${msg.role === 'user' ? 'bg-secondary' : 'bg-[#B34B60]/10'}`}>
